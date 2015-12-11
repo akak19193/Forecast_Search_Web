@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="UTF-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+        <title>Forecast Search</title>
+        <style type="text/css" media="screen">
+        .alpha {
+            background: rgb(0, 0, 0);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        @media (min-width: 768px){
+            #address{
+                width: 250px;
+            }
+            #state{
+                width:170px;
+            }
+            ul{
+            max-width: 360px;
+            }
+            
+        }
+        @media (max-width: 767px){
+            body{
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+        @media (min-width: 1200px){
+            #mapdiv{
+                margin-top: 0px;
+            }
+            .roundcn{
+            border-radius: 7px;
+            }
+            #N7D{
+                background-color: #2F3439;
+            }
+            .firstcol{
+                margin-left: 180px;
+            }
+            .othercol{
+                margin-left: 20px;
+            }
+        }
+        @media (max-width: 1199px){
+            #mapdiv{
+                margin-top: -20px;
+            }
+            .roundcn{
+            border-radius: 25px;
+            }
+            .firstcol{
+                margin: 0 0 20px;
+            }
+            .othercol{
+                margin: 0 0 20px;
+            }
+        }
+        .error{
+            color: red;
+        }
+        #state{
+            color: black !important;
+        }
+        label.error { 
+           float: none; 
+           color: red; 
+           vertical-align: top; 
+           display: block;
+        }​
+        input{
+            display: block;
+        }
+        .form-group{
+            min-height: 120px;
+        }
+        .nav-tabs > li > a{
+            border: medium none;
+        }
+        .nav-tabs > li > a:hover{
+            background-color: #296CA3 !important;
+            border: medium none;
+            border-radius: 0;
+            color:white;
+        }
+        .nav-tabs > li.active > a,
+        .nav-tabs > li.active > a:focus,
+        .nav-tabs > li.active > a:hover{
+            background-color: #296CA3 !important;
+            color:white;
+        }
+        .nav-tabs{
+            background-color: #EEEEEE;
+        }
+        
+        .table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+            background-color: #F9F9F9;
+        }
+        .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+            background-color: #F3DEDE;
+        }
+        body {
+            background-image:    url(http://cs-server.usc.edu:45678/hw/hw8/images/bg.jpg);
+            background-size:     cover;                     
+            background-repeat:   no-repeat;
+            
+        }
+        .hhh{
+            display: none;
+        }
+        .glyphicon-plus{
+            cursor: pointer; 
+            cursor: hand;
+        }
+        #fb-icon{
+            cursor: pointer; 
+            cursor: hand;
+        }
+        .ui-dialog-titlebar {
+          background-color: white;
+          background-image: none;
+          color: black;
+          border: none;
+        }
+        .roundcn{
+            padding:0;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div id="fb-root"></div>
+        <script>
+        //FB lines
+          window.fbAsyncInit = function() {
+            FB.init({appId: '1513021565690883', status: true, cookie: true,
+            xfbml: true});
+            };
+            (function() {
+            var e = document.createElement('script'); e.async = true;
+            e.src = document.location.protocol +
+            '//connect.facebook.net/en_US/all.js';
+            document.getElementById('fb-root').appendChild(e);
+            }());
+
+            
+        </script>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.32/jquery.form.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js'></script>
+    
+    		<BR><BR><BR>
+        <h1 class="text-center">Forecast Search</h1>
+</div>
+            <BR>
+            <BR>
+        
+        <form class="form-inline" role="form" id="myform" action="http://liu966sapp-env.elasticbeanstalk.com" method="GET">
+        	
+        <div class="container alpha">
+        
+        	<BR>
+        
+        
+        <div class="col-lg-9">
+            <div class="form-group">
+                <label for="address"><font color="white">Street Address:</font><font color="red">*</font></label><BR>
+                <input type="text" class="form-control form-control-inline" id="address" name="address" placeholder="Enter Street Address">
+                <BR>
+            </div>
+            
+
+            
+            <div class="form-group">
+                <label for="city"><font color="white">City:</font><font color="red">*</font></label><BR>
+                <input type="text" class="form-control form-control-inline" id="city" name="city" placeholder="Enter the city name">
+                
+            </div>
+            
+
+            
+            <div class="form-group">
+                <label for="state"><font color="white">State:</font><font color="red">*</font></label><BR>
+                <select class="form-control form-control-inline" id="state" name="state">
+                    <option>Select your state...</option>
+                    <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="DC">District Of Columbia</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+                </select>
+                
+            </div>
+            
+
+            
+                 <div class="form-group">
+                    <div><label for="degree"><font color="white">Degree:</font><font color="red">*</font></label></div>
+	                <div>
+		                <input type="radio" name="degree" id="degreef" value="Fahrenheit" checked="true"><font color="white"> Fahrenheit</font>
+		                <label class="checkbox-inline">
+		                	<input type="radio" name="degree" id="degreec" value="Celsius"><font color="white"> Celsius</font>
+		                </label>
+	                </div>
+                </div>
+
+            </div>
+            <div class="col-lg-3">
+                <div class="btn-froup form-group col-lg-offset-3">
+                    <div class="pull-right">
+                    <BR>
+                    &nbsp;&nbsp;
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>Search</button>
+                    <button type="button" class="btn btn-default" id="aaa"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Clear</button>
+                    <BR>
+                    <label><font color="white">Powered By:&nbsp;</font></label><a href="http://forecast.io/"><img src="http://cs-server.usc.edu:45678/hw/hw8/images/forecast_logo.png" width=100 height=60></a>
+                	</div>
+                </div>
+            </div>
+
+            
+
+        	</div>
+           
+           
+        </div>
+        <div class="container" style="padding: 20px"><hr style="margin: 5px -20px 20px;">
+        
+            <ul class="nav nav-tabs result" style="margin: 0px -20px; text-align:center;">
+                <li class="active" style="width:30%;"><a  data-toggle="tab" href="#RN">Right Now</a></li>
+                <li style="width:36%;"><a  data-toggle="tab" href="#N24H">Next 24 Hours</a></li>
+                <li style="width:34%;"><a  data-toggle="tab" href="#N7D">Next 7 Days</a></li>
+            </ul>
+
+            <div class="tab-content result" >
+                <div class="row tab-pane fade in active" id="RN" style="margin: 0px -20px ;">
+                    
+                        <div class="col-lg-6" style="padding:0;">
+                        <table class="table table-striped">
+                            <tr><div class="col-lg-6" style="text-align:center; background-color:#F47D7D;"><img id="t1d1" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=200 height=200></div>
+                            <div class="col-lg-6" style="background-color:#F47D7D; height:200px; text-align:center;">
+                            <label><font id="t1d2" color="white" style="font-size:16px;">Mostly cloudy in Los Angeles, CA</font></label><BR>
+                            <div ><font id="t1d3" style="font-size:90px;" color="white">71</font><font id="t1d4" color="white" style="font-size:20px; display:block; margin-top:-105px; margin-left:100px;">℉</font></div>
+                            <BR><BR><BR><BR>
+                            
+                            
+                            <label style="font-size:16px;"><font id="t1d5" color="blue">L: 70°</font>&nbsp;|&nbsp;<font id="t1d6" color="green">H: 79°</font></label>
+                            <BR>
+                            <img id="fb-icon" src="http://cs-server.usc.edu:45678/hw/hw8/images/fb_icon.png" width=40 height=40 style="float:right; margin-top:-48px;">
+                            </div>
+
+                    </tr>
+                    <tr><td class="col-lg-3">Precipitation</td><td class="col-lg-3" id="t1d7">0%</td></tr>
+                    <tr><td>Chance of Rain</td><td id="t1d8">0%</td></tr>
+                    <tr><td>Wind Speed</td><td id="t1d9">0%</td></tr>
+                    <tr><td>Dew Point</td><td id="t1d10">0%</td></tr>
+                    <tr><td>Humidity</td><td id="t1d11">0%</td></tr>
+                    <tr><td>Visibility</td><td id="t1d12">0%</td></tr>
+                    <tr><td>Sunrise</td><td id="t1d13">0%</td></tr>
+                    <tr><td>Sunset</td><td id="t1d14">0%</td></tr>
+                        </table>
+                    </div>
+                <div id="mapdiv" class="col-lg-6" style="padding:0;">
+                <div id="Map" style="height:495px; width:100%; border: 2px solid white;"></div></div>
+            </div>
+
+            <div class="row tab-pane fade" id="N24H" style=" margin-left:-20px;">
+                <table class="table" style="text-align:center;">
+                    <thead style="background-color:#296CA3; color:white;">
+                        <td><strong>Time</strong></td>
+                        <td><strong>Summary</strong></td>
+                        <td><strong>Cloud Cover</strong></td>
+                        <td><strong id="t2d1">Temp</strong></td>
+                        <td><strong>View Details</strong></td>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color:white; height:20px;"><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr style="background-color:white;">
+                            <td id="t2r1d1">10:00 PM</td>
+                            <td><img id="t2r1d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r1d3">0%</td>
+                            <td id="t2r1d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r2+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r1d5">z</td>
+                                <td id="t2r1d6">z</td>
+                                <td id="t2r1d7">z</td>
+                                <td id="t2r1d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r2d1">10:00 PM</td>
+                            <td><img id="t2r2d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r2d3">0%</td>
+                            <td id="t2r2d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r2+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r2d5">z</td>
+                                <td id="t2r2d6">z</td>
+                                <td id="t2r2d7">z</td>
+                                <td id="t2r2d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r3d1">10:00 PM</td>
+                            <td><img id="t2r3d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r3d3">0%</td>
+                            <td id="t2r3d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r3+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r3d5">z</td>
+                                <td id="t2r3d6">z</td>
+                                <td id="t2r3d7">z</td>
+                                <td id="t2r3d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r4d1">10:00 PM</td>
+                            <td><img id="t2r4d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r4d3">0%</td>
+                            <td id="t2r4d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r4+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r4d5">z</td>
+                                <td id="t2r4d6">z</td>
+                                <td id="t2r4d7">z</td>
+                                <td id="t2r4d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r5d1">10:00 PM</td>
+                            <td><img id="t2r5d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r5d3">0%</td>
+                            <td id="t2r5d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r5+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r5d5">z</td>
+                                <td id="t2r5d6">z</td>
+                                <td id="t2r5d7">z</td>
+                                <td id="t2r5d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r6d1">10:00 PM</td>
+                            <td><img id="t2r6d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r6d3">0%</td>
+                            <td id="t2r6d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r6+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r6d5">z</td>
+                                <td id="t2r6d6">z</td>
+                                <td id="t2r6d7">z</td>
+                                <td id="t2r6d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r7d1">10:00 PM</td>
+                            <td><img id="t2r7d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r7d3">0%</td>
+                            <td id="t2r7d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r7+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r7d5">z</td>
+                                <td id="t2r7d6">z</td>
+                                <td id="t2r7d7">z</td>
+                                <td id="t2r7d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r8d1">10:00 PM</td>
+                            <td><img id="t2r8d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r8d3">0%</td>
+                            <td id="t2r8d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r8+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r8d5">z</td>
+                                <td id="t2r8d6">z</td>
+                                <td id="t2r8d7">z</td>
+                                <td id="t2r8d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r9d1">10:00 PM</td>
+                            <td><img id="t2r9d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r9d3">0%</td>
+                            <td id="t2r9d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r9+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r9d5">z</td>
+                                <td id="t2r9d6">z</td>
+                                <td id="t2r9d7">z</td>
+                                <td id="t2r9d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r10d1">10:00 PM</td>
+                            <td><img id="t2r10d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r10d3">0%</td>
+                            <td id="t2r10d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r10+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r10d5">z</td>
+                                <td id="t2r10d6">z</td>
+                                <td id="t2r10d7">z</td>
+                                <td id="t2r10d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r11d1">10:00 PM</td>
+                            <td><img id="t2r11d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r11d3">0%</td>
+                            <td id="t2r11d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r11+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r11d5">z</td>
+                                <td id="t2r11d6">z</td>
+                                <td id="t2r11d7">z</td>
+                                <td id="t2r11d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r12d1">10:00 PM</td>
+                            <td><img id="t2r12d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r12d3">0%</td>
+                            <td id="t2r12d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r12+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r12d5">z</td>
+                                <td id="t2r12d6">z</td>
+                                <td id="t2r12d7">z</td>
+                                <td id="t2r12d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r13d1">10:00 PM</td>
+                            <td><img id="t2r13d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r13d3">0%</td>
+                            <td id="t2r13d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r13+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r13d5">z</td>
+                                <td id="t2r13d6">z</td>
+                                <td id="t2r13d7">z</td>
+                                <td id="t2r13d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r14d1">10:00 PM</td>
+                            <td><img id="t2r14d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r14d3">0%</td>
+                            <td id="t2r14d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r14+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r14d5">z</td>
+                                <td id="t2r14d6">z</td>
+                                <td id="t2r14d7">z</td>
+                                <td id="t2r14d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r15d1">10:00 PM</td>
+                            <td><img id="t2r15d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r15d3">0%</td>
+                            <td id="t2r15d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r15+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r15d5">z</td>
+                                <td id="t2r15d6">z</td>
+                                <td id="t2r15d7">z</td>
+                                <td id="t2r15d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r16d1">10:00 PM</td>
+                            <td><img id="t2r16d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r16d3">0%</td>
+                            <td id="t2r16d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r16+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r16d5">z</td>
+                                <td id="t2r16d6">z</td>
+                                <td id="t2r16d7">z</td>
+                                <td id="t2r16d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r17d1">10:00 PM</td>
+                            <td><img id="t2r17d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r17d3">0%</td>
+                            <td id="t2r17d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r17+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r17d5">z</td>
+                                <td id="t2r17d6">z</td>
+                                <td id="t2r17d7">z</td>
+                                <td id="t2r17d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r18d1">10:00 PM</td>
+                            <td><img id="t2r18d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r18d3">0%</td>
+                            <td id="t2r18d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r18+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r18d5">z</td>
+                                <td id="t2r18d6">z</td>
+                                <td id="t2r18d7">z</td>
+                                <td id="t2r18d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r19d1">10:00 PM</td>
+                            <td><img id="t2r19d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r19d3">0%</td>
+                            <td id="t2r19d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r19+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r19d5">z</td>
+                                <td id="t2r19d6">z</td>
+                                <td id="t2r19d7">z</td>
+                                <td id="t2r19d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r20d1">10:00 PM</td>
+                            <td><img id="t2r20d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r20d3">0%</td>
+                            <td id="t2r20d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r20+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r20d5">z</td>
+                                <td id="t2r20d6">z</td>
+                                <td id="t2r20d7">z</td>
+                                <td id="t2r20d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r21d1">10:00 PM</td>
+                            <td><img id="t2r21d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r21d3">0%</td>
+                            <td id="t2r21d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r21+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r21d5">z</td>
+                                <td id="t2r21d6">z</td>
+                                <td id="t2r21d7">z</td>
+                                <td id="t2r21d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r22d1">10:00 PM</td>
+                            <td><img id="t2r22d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r22d3">0%</td>
+                            <td id="t2r22d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r22+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r22d5">z</td>
+                                <td id="t2r22d6">z</td>
+                                <td id="t2r22d7">z</td>
+                                <td id="t2r22d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r23d1">10:00 PM</td>
+                            <td><img id="t2r23d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r23d3">0%</td>
+                            <td id="t2r23d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r23+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r23d5">z</td>
+                                <td id="t2r23d6">z</td>
+                                <td id="t2r23d7">z</td>
+                                <td id="t2r23d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr style="background-color:white;">
+                            <td id="t2r24d1">10:00 PM</td>
+                            <td><img id="t2r24d2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=40 height=40></td>
+                            <td id="t2r24d3">0%</td>
+                            <td id="t2r24d4">70.28</td>
+                            <td><span class="glyphicon glyphicon-plus" id="t2r24+" aria-hidden="true" style="color:#296CA3;"></span></td>
+                        </tr>
+                        <tr class="hhh">
+                            <td colspan=5 style="background-color:#EEEEEE; padding:20px;">
+                                <table class="table">
+                            <tr style="background-color:white;">
+                                <td><strong>Wind</strong></td>
+                                <td><strong>Humidity</strong></td>
+                                <td><strong>Visibility</strong></td>
+                                <td><strong>Pressure</strong></td>
+                            </tr>
+                            <tr style="background-color:#EEEEEE;">
+                                <td id="t2r24d5">z</td>
+                                <td id="t2r24d6">z</td>
+                                <td id="t2r24d7">z</td>
+                                <td id="t2r24d8">z</td>
+                            </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row tab-pane fade" id="N7D" style="height:375px; margin-left:-20px;">
+                <div class="container">
+                    <div style="height:8px;"><p></p></div>
+                <div id="t3" class="row" style="text-align:center; height:340px;">
+
+                    <div id="t3r1" class="col-lg-1 roundcn firstcol" style="background-color:#327CB7; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r1d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r1d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r1d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r1d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r1d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r2" class="col-lg-1 roundcn othercol" style="background-color:#EF423E; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r2d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r2d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r2d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r2d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r2d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r3" class="col-lg-1 roundcn othercol" style="background-color:#E88E48; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r3d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r3d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r3d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r3d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r3d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r4" class="col-lg-1 roundcn othercol" style="background-color:#A7A52E; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r4d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r4d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r4d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r4d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r4d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r5" class="col-lg-1 roundcn othercol" style="background-color:#986EA8; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r5d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r5d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r5d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r5d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r5d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r6" class="col-lg-1 roundcn othercol" style="background-color:#F57B7C; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r6d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r6d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r6d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r6d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r6d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                    
+                    <div id="t3r7" class="col-lg-1 roundcn othercol" style="background-color:#D04270; height:100%; color:white;" data-toggle="modal" data-target="#Modal">
+                        <strong id="t3r7d1" style="font-size:16px;">Friday</strong><p></p>
+                        <strong id="t3r7d2" style="font-size:16px;">Oct 16</strong><p></p>
+                        <img id="t3r7d3" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=75 height=75>
+                        <p>Min<BR>Temp</p>
+                        <strong id="t3r7d4" style="font-size:30px;">67°</strong><p></p>
+                        <p>Max<BR>Temp</p>
+                        <strong id="t3r7d5" style="font-size:30px;">81°</strong>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal !-->
+            <div class="modal fade" id="Modal" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"><b id="t3m1">Weather in Los Angeles on Oct 16</b></h4>
+                </div>
+                <div class="modal-body" style="text-align:center;">
+                  <img id="t3m2" src="http://cs-server.usc.edu:45678/hw/hw8/images/cloud_night.png" width=150 height=150><BR><BR>
+                <div style="font-size:25px;"><b><span id="t3m3">Friday:</span> <span id="t3m4" style="color:#FFA600;">Mostly cloudy throughout the day.</span></b></div>
+                <BR>
+                <div class="row" >
+                    <div class="col-lg-4"><b style="font-size:20px;">Sunrise Time</b><p id="t3m5">07:00 AM</p></div>
+                    <div class="col-lg-4"><b style="font-size:20px;">Sunset Time</b><p id="t3m6">07:00 AM</p></div>
+                    <div class="col-lg-4"><b style="font-size:20px;">Humidity</b><p id="t3m7">07:00 AM</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4"><b style="font-size:20px;">Wind Speed</b><p id="t3m8">07:00 AM</p></div>
+                    <div class="col-lg-4"><b style="font-size:20px;">Visibility</b><p id="t3m9">07:00 AM</p></div>
+                    <div class="col-lg-4"><b style="font-size:20px;">Pressure</b><p id="t3m10">07:00 AM</p></div>
+                </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+              
+
+            </div>
+        </div>
+    </form>
+
+ 
+        
+
+        
+        
+<script type="text/javascript">
+        
+        //Extenal jQuery validate methods:
+        $.validator.addMethod("valueNotEquals", function(value, element, arg){
+        return arg != value;
+        }, "Value must not equal arg.");
+
+        jQuery.validator.addMethod("noSpace", function(value, element) { 
+        return !value.match(/^\s*$/); 
+        }, "All spaces are not allowed");
+
+        //jQuery validation
+        $('form').validate({
+            rules:{
+                address:{required:true, noSpace:true},
+                city:{required:true, noSpace:true},
+                state:{valueNotEquals:"Select your state..."}
+            },
+            messages:{
+                address:{required:"Please enter the street address", noSpace:"Please enter the street address"},
+                city:{required:"Please enter the city", noSpace:"Please enter the city"},
+                state:{valueNotEquals:"Please select a state"}
+            },
+        });
+
+        //Create Array for icon display
+        var png = new Array();
+        png['clear-day'] = "clear.png";
+        png["clear-night"] = "clear_night.png";
+        png["rain"] = "rain.png";
+        png["snow"] = "snow.png";
+        png["sleet"] = "sleet.png";
+        png["wind"] = "wind.png";
+        png["fog"] = "fog.png";
+        png["cloudy"] = "cloudy.png";
+        png["partly-cloudy-day"] = "cloud_day.png";
+        png["partly-cloudy-night"] = "cloud_night.png";
+
+        //Create Array for month display
+        var marr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        //Create Array for weekday display
+        var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        
+        //Function to convert timestamp to HH:MM AM/PM format
+        function showTime(timestamp){
+            var Digital=new Date();
+            Digital.setTime(timestamp * 1000);
+            var hours=Digital.getHours();
+            var minutes=Digital.getMinutes();
+            var seconds=Digital.getSeconds();
+            var dn="AM"; 
+            if (hours>12){
+            dn="PM";
+            hours=hours-12;
+            }
+            if (hours==0)
+            {hours=12}
+            if (hours<=9)
+            {hours="0"+hours}
+            if (minutes<=9)
+            {minutes="0"+minutes}
+            return hours+':'+minutes+' '+dn;
+        }
+
+        //Function to convert timestamp to MON DAY format
+        function showDate(timestamp){
+            var Digital=new Date();
+            Digital.setTime(timestamp * 1000);
+            var day = Digital.getDate();
+            var month = Digital.getMonth();
+            return marr[month]+' '+day
+        }
+
+        //Function to convert timestamp to weekday
+        function showWeek(timestamp){
+            var Digital=new Date();
+            Digital.setTime(timestamp * 1000);
+            var weekd = Digital.getDay();
+            return days[weekd];
+        }
+
+        $('.result').addClass('hhh');
+
+        $(document).ready(function(){
+            
+
+            
+            $('span.glyphicon-plus').click(function(){
+                $(this).parent().parent().next().toggle();
+            });
+
+            //Auto clear on load
+            jQuery(function(){
+               jQuery('#aaa').click();
+            });
+            
+            //Clear button function
+            $('#aaa').click(function(){
+                $('.result').addClass('hhh');
+                $('label.error').remove();
+                $('#address').val('');
+                $('#city').val('');
+                $('#state').val('Select your state...');
+                $('#degreef').prop("checked","checked");
+            });
+
+            //Ajax quest part
+            var valid = $("form").valid();
+            var formData = {
+                'address' : $('#address').val(),
+                'city' : $('#city').val(),
+                'state' : $('#state').val(),
+                'degree' : $('input:radio:checked').val()
+                };
+            var options = {
+                
+                success: showResponse,
+                dataType: 'json' 
+            };
+            $('form').ajaxForm(options);
+
+            });
+
+        function showResponse(responseText, statusText, xhr, $form)  { 
+            $('.result').removeClass('hhh');
+            var data = responseText;
+    //Data units preprocessing
+            var degdisplay = "";
+            var predisplay = "";
+            var windisplay = "";
+            var visdisplay = "";
+            var pssdisplay = "";
+            if($('input:radio:checked').val() == 'Fahrenheit'){
+                degdisplay = "℉";
+                if(data.currently.precipIntensity < 0.002)
+                        {predisplay = "None";}
+                    else if (data.currently.precipitation < 0.017) 
+                        {predisplay = "Very Light";}
+                    else if (data.currently.precipitation < 0.1) 
+                        {predisplay = "Light";}
+                    else if (data.currently.precipitation < 0.4) 
+                        {predisplay = "Moderate";}
+                    else 
+                        {predisplay = "Heavy";}
+                windisplay = "mph";
+                visdisplay = "mi";
+                pssdisplay = "mb";
+            }
+            else{
+                degdisplay = "℃";
+                if(data.currently.precipIntensity < 0.0508)
+                        {predisplay = "None";}
+                    else if (data.currently.precipitation < 0.4318) 
+                        {predisplay = "Very Light";}
+                    else if (data.currently.precipitation < 2.54) 
+                        {predisplay = "Light";}
+                    else if (data.currently.precipitation < 10.16) 
+                        {predisplay = "Moderate";}
+                    else 
+                        {predisplay = "Heavy";}
+                windisplay = "m/s";
+                visdisplay = "km";
+                pssdisplay = "hPa";
+            }
+
+            //Table 1 data displaying
+            //Left half
+            $('#t1d1').attr('src', 'http://cs-server.usc.edu:45678/hw/hw8/images/'+png[data.currently.icon]);
+            $('#t1d2').text(data.currently.summary+' in '+$('#city').val()+', '+$('#state').val());
+            $('#t1d3').text(Math.round(data.currently.temperature));
+            $('#t1d4').text(degdisplay);
+            $('#t1d5').text('L: '+Math.round(data.daily.data[0].temperatureMin)+'°');
+            $('#t1d6').text('H: '+Math.round(data.daily.data[0].temperatureMax)+'°');
+            $('#t1d7').text(predisplay);
+            $('#t1d8').text(Math.round(data.currently.precipProbability*100)+'%');
+            $('#t1d9').text((data.currently.windSpeed).toFixed(2)+' '+windisplay);
+            $('#t1d10').text((data.currently.dewPoint).toFixed(2)+' '+degdisplay);
+            $('#t1d11').text(Math.round(data.currently.humidity*100)+'%');
+            $('#t1d12').text((data.currently.visibility).toFixed(2)+' '+visdisplay);
+            $('#t1d13').text(showTime(data.daily.data[0].sunriseTime));
+            $('#t1d14').text(showTime(data.daily.data[0].sunsetTime));
+            //Right map
+            $('#Map').empty();
+            var lat = data.latitude;
+            var lon = data.longitude;
+            var zoom = 5;
+            var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+            var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+            map = new OpenLayers.Map("Map");
+            var mapnik         = new OpenLayers.Layer.OSM();
+            map.addLayer(mapnik);
+            var layer_cloud = new OpenLayers.Layer.XYZ(
+                "clouds",
+                "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+                {
+                    isBaseLayer: false,
+                    opacity: 0.7,
+                    sphericalMercator: true
+                }
+            );
+            var layer_precipitation = new OpenLayers.Layer.XYZ(
+                "precipitation",
+                "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+                {
+                    isBaseLayer: false,
+                    opacity: 0.7,
+                    sphericalMercator: true
+                }
+            );
+            map.addLayers([mapnik, layer_precipitation, layer_cloud]);
+            map.setCenter(position, zoom);
+
+            //Table 2 data display
+            $('#t2d1').text('Temp('+degdisplay+')');
+            for(var i = 1; i <= 24; i++){
+                $('#t2r'+i+'d1').text(showTime(data.hourly.data[i-1].time));
+                $('#t2r'+i+'d2').attr('src', 'http://cs-server.usc.edu:45678/hw/hw8/images/'+png[data.hourly.data[i-1].icon]);
+                $('#t2r'+i+'d3').text(Math.round(data.hourly.data[i-1].cloudCover*100)+'%');
+                $('#t2r'+i+'d4').text((data.hourly.data[i-1].temperature).toFixed(2));
+                $('#t2r'+i+'d5').text(data.hourly.data[i-1].windSpeed+' '+windisplay);
+                $('#t2r'+i+'d6').text(Math.round(data.hourly.data[i-1].humidity*100)+'%');
+                $('#t2r'+i+'d7').text(data.hourly.data[i-1].visibility+' '+visdisplay);
+                $('#t2r'+i+'d8').text(data.hourly.data[i-1].pressure+' '+pssdisplay);
+            }
+            
+            
+
+            //Table 3 data display
+            for(var j = 1; j <= 7; j++){
+                $('#t3r'+j+'d1').text(showWeek(data.daily.data[j].time));
+                $('#t3r'+j+'d2').text(showDate(data.daily.data[j].time));
+                $('#t3r'+j+'d3').attr('src', 'http://cs-server.usc.edu:45678/hw/hw8/images/'+png[data.daily.data[j].icon]);
+                $('#t3r'+j+'d4').text(Math.round(data.daily.data[j].temperatureMin)+'°');
+                $('#t3r'+j+'d5').text(Math.round(data.daily.data[j].temperatureMax)+'°');
+            }
+            
+            //Modal display
+            $('.roundcn').click(function(){
+                var j = $('div.roundcn').index($(this))+1;
+                $('#t3m1').text('Weather in '+$('#city').val()+' on '+showDate(data.daily.data[j].time));
+                $('#t3m2').attr('src', 'http://cs-server.usc.edu:45678/hw/hw8/images/'+png[data.daily.data[j].icon]);
+                $('#t3m3').text(showWeek(data.daily.data[j].time)+': ');
+                $('#t3m4').text(data.daily.data[j].summary);
+                $('#t3m5').text(showTime(data.daily.data[j].sunriseTime));
+                $('#t3m6').text(showTime(data.daily.data[j].sunsetTime));
+                $('#t3m7').text(Math.round(data.daily.data[j].humidity*100)+'%');
+                $('#t3m8').text(data.daily.data[j].windSpeed+' '+windisplay);
+                $('#t3m9').text(data.daily.data[j].visibility+' '+visdisplay);
+                $('#t3m10').text(data.daily.data[j].pressure+' '+pssdisplay);
+            });
+
+//FB button function
+            var string = "Current weather in "+$('#city').val()+', '+$('#state').val();
+            var imglk = $('#t1d1').attr('src');
+            var cap = data.currently.summary+', '+$('#t1d3').text()+$('#t1d4').text();
+            $('#fb-icon').click(function(e){
+                e.preventDefault();
+                FB.ui({
+                    method: 'feed',
+                    name: string,
+                    picture: imglk,
+                    description: cap,
+                    caption: "WEATHER INFORMATION FORM FORECAST.IO",
+                    link: 'http://forecast.io',
+                }, 
+                //Call back
+                 function(response) {
+                if (response && !response.error_message) {
+                  alert('Posted Successfully');
+                } else {
+                  alert('Not Posted');
+                }
+              }
+                );
+                
+                });
+
+           
+}                             
+</script>    
+<noscript>
+    </body>
+</html>
